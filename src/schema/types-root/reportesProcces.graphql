@@ -1,0 +1,27 @@
+type Query {
+    reporteFacturas(fechaIn: String, fechaFi: String, tipoComprobante: String): [ResultReporte]
+}
+
+
+type ResultReporte {
+    idcomprobante: Int
+    uuid: String
+    fechaTimbrado: Date
+    versionCFDI: String
+    versionComplemento: String
+    folio: String
+    serie: String
+    fechaFactura: Date
+    tipoComprobante: String
+    formaPago: String
+    metodoPago: String
+    condicionPago: String
+    moneda: String
+    subtotal: Float
+    total: Float
+    descuento: Float
+    lugarExpedicion: String
+    tipoCambio: String
+}
+
+scalar Date
