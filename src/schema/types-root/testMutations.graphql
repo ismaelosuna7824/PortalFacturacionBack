@@ -1,0 +1,7 @@
+type Mutation{
+    test(test: testInput): ResultTest!
+}
+type ResultTest{
+    status: Boolean!
+    message: String!
+}
