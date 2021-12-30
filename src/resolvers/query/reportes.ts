@@ -6,6 +6,7 @@ const reportesQuery: IResolvers = {
             const users = new Array(0);
             let sql = regresaSql(fechaIn, fechaFi, tipoComprobante);
 
+            //console.log(sql)
             
             return new Promise((resolve, reject) => {
               if(sql == ""){
@@ -18,24 +19,18 @@ const reportesQuery: IResolvers = {
                     // Resultado correcto
                     results.forEach((element: any) => {
                       users.push({
-                        idcomprobante: element.idcomprobante,
                         uuid: element.uuid,
                         fechaTimbrado: element.fechaTimbrado,
-                        versionCFDI: element.versionCFDI,
-                        versionComplemento: element.versionComplemento,
+                        tipoComprobante: element.tipoComprobante,
                         folio: element.folio,
                         serie: element.serie,
-                        fechaFactura: element.fechaFactura,
-                        tipoComprobante: element.tipoComprobante,
-                        formaPago: element.formaPago,
-                        metodoPago: element.metodoPago,
-                        condicionPago: element.condicionPago,
-                        moneda: element.moneda,
-                        subtotal: element.subtotal,
                         total: element.total,
                         descuento: element.descuento,
-                        lugarExpedicion: element.lugarExpedicion,
-                        tipoCambio: element.tipoCambio,
+                        totalImpuestoTrasladado: element.totalImpuestoTrasladado,
+                        totalImpuestoRetenido: element.totalImpuestoRetenido,
+                        Metadata: element.Metadata,
+                        rfcEmisor: element.rfcEmisor,
+                        nombreEmisor: element.nombreEmisor
                       });
                         //console.log(element)
                     });
@@ -53,12 +48,12 @@ export default reportesQuery;
 
 export const regresaSql = (fechaIn:string, fechaFin: string, tipoC:string) =>{
     let consulta = "";
-    if(fechaIn!= "" && fechaFin != "" && tipoC ==""){
-        consulta = `SELECT * FROM comprobante WHERE fechaFactura BETWEEN '${fechaIn}' AND '${fechaFin}'`;
-    }else if(fechaIn == "" && fechaFin == "" && tipoC !="" ){
-        consulta = `SELECT * FROM comprobante WHERE tipoComprobante = "${tipoC}"`;
+    if(fechaIn != "" && fechaFin != "" && tipoC ==""){
+      new Date(fechaIn.replace('-', '/')).getFullYear() != new Date(fechaFin.replace('-', '/')).getFullYear() ?  "" : consulta = `SELECT * FROM cfdi2021 WHERE fechaTimbrado BETWEEN '${fechaIn}' AND '${fechaFin}'`;
+    }else if(fechaIn != " " && fechaFin == "" && tipoC !="" ){
+      consulta = `SELECT * FROM cfdi2021 WHERE tipoComprobante = "${tipoC}"`;
     }else if(fechaIn!= "" && fechaFin != "" && tipoC !=""){
-        consulta = `SELECT * FROM comprobante WHERE tipoComprobante = "${tipoC}" AND fechaFactura BETWEEN '${fechaIn}' AND '${fechaFin}'`;
+         new Date(fechaIn.replace('-', '/')).getFullYear() != new Date(fechaFin.replace('-', '/')).getFullYear() ?  "" : console.log(),  consulta = `SELECT * FROM cfdi2021 WHERE tipoComprobante = "${tipoC}" AND fechaFactura BETWEEN '${fechaIn}' AND '${fechaFin}'`;
     }else{
         consulta = "";
     }
