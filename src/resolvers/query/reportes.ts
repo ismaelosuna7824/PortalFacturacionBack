@@ -50,9 +50,9 @@ export const regresaSql = (fechaIn:string, fechaFin: string, tipoC:string) =>{
     if(fechaIn != "" && fechaFin != "" && tipoC ==""){
       new Date(fechaIn.replace('-', '/')).getFullYear() != new Date(fechaFin.replace('-', '/')).getFullYear() ?  "" : consulta = `SELECT uuid, fechaTimbrado, tipoComprobante, folio, total FROM cfdi${new Date(fechaFin.replace('-', '/')).getFullYear()} WHERE fechaTimbrado BETWEEN '${fechaIn}' AND '${fechaFin}'`;
     }else if(fechaIn != " " && fechaFin == "" && tipoC !="" ){
-      consulta = `SELECT uuid, fechaTimbrado, tipoComprobante, folio, totalFROM cfdi${new Date(fechaFin.replace('-', '/')).getFullYear()} WHERE tipoComprobante = "${tipoC}"`;
+      consulta = `SELECT uuid, fechaTimbrado, tipoComprobante, folio, total FROM cfdi${new Date(fechaIn.replace('-', '/')).getFullYear()} WHERE tipoComprobante = "${tipoC}"`;
     }else if(fechaIn!= "" && fechaFin != "" && tipoC !=""){
-         new Date(fechaIn.replace('-', '/')).getFullYear() != new Date(fechaFin.replace('-', '/')).getFullYear() ?  "" : console.log(),  consulta = `SELECT uuid, fechaTimbrado, tipoComprobante, folio, total FROM cfdi${new Date(fechaFin.replace('-', '/')).getFullYear()} WHERE tipoComprobante = "${tipoC}" AND fechaFactura BETWEEN '${fechaIn}' AND '${fechaFin}'`;
+         new Date(fechaIn.replace('-', '/')).getFullYear() != new Date(fechaFin.replace('-', '/')).getFullYear() ?  "" :  consulta = `SELECT uuid, fechaTimbrado, tipoComprobante, folio, total FROM cfdi${new Date(fechaIn.replace('-', '/')).getFullYear()} WHERE tipoComprobante = "${tipoC}" AND fechaTimbrado BETWEEN '${fechaIn}' AND '${fechaFin}'`;
     }else{
         consulta = "";
     }
