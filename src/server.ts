@@ -20,8 +20,10 @@ async function init() {
   const server = new ApolloServer({
     schema,
     introspection: true, // Necesario
-    context: async () => {
-      return { connection, pubsub };
+    context: async ({req}:any) => {
+     // console.log(req.headers.authorization)
+      const token = req ? req.headers.authorization : connection;
+      return { connection, pubsub, token };
     },
   });
 

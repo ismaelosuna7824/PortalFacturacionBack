@@ -1,0 +1,17 @@
+type Mutation{
+    createUser(usuario: String, contrasena: String): ResultUser!
+}
+type Query{
+    login(usuario: String, contrasena: String): ResultLogin
+    me: ResultUser!
+}
+
+
+type ResultLogin{
+    status: Boolean!
+    token: String!
+}
+type ResultUser{
+    status: Boolean!
+    message: String!
+}
