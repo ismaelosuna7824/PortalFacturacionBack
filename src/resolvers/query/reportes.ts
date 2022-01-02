@@ -28,7 +28,7 @@ const reportesQuery: IResolvers = {
                         // totalImpuestoTrasladado: element.totalImpuestoTrasladado,
                         // totalImpuestoRetenido: element.totalImpuestoRetenido,
                         // Metadata: element.Metadata,
-                        // rfcEmisor: element.rfcEmisor,
+                        rfcEmisor: element.rfcEmisor,
                         // nombreEmisor: element.nombreEmisor
                       });
                         //console.log(element)
@@ -48,11 +48,11 @@ export default reportesQuery;
 export const regresaSql = (fechaIn:string, fechaFin: string, tipoC:string) =>{
     let consulta = "";
     if(fechaIn != "" && fechaFin != "" && tipoC ==""){
-      new Date(fechaIn.replace('-', '/')).getFullYear() != new Date(fechaFin.replace('-', '/')).getFullYear() ?  "" : consulta = `SELECT uuid, fechaTimbrado, tipoComprobante, folio, total FROM cfdi${new Date(fechaFin.replace('-', '/')).getFullYear()} WHERE fechaTimbrado BETWEEN '${fechaIn}' AND '${fechaFin}'`;
+      new Date(fechaIn.replace('-', '/')).getFullYear() != new Date(fechaFin.replace('-', '/')).getFullYear() ?  "" : consulta = `SELECT uuid, fechaTimbrado, tipoComprobante, rfcEmisor, folio, total FROM cfdi${new Date(fechaFin.replace('-', '/')).getFullYear()} WHERE fechaTimbrado BETWEEN '${fechaIn}' AND '${fechaFin}'`;
     }else if(fechaIn != " " && fechaFin == "" && tipoC !="" ){
-      consulta = `SELECT uuid, fechaTimbrado, tipoComprobante, folio, total FROM cfdi${new Date(fechaIn.replace('-', '/')).getFullYear()} WHERE tipoComprobante = "${tipoC}"`;
+      consulta = `SELECT uuid, fechaTimbrado, tipoComprobante, rfcEmisor, folio, total FROM cfdi${new Date(fechaIn.replace('-', '/')).getFullYear()} WHERE tipoComprobante = "${tipoC}"`;
     }else if(fechaIn!= "" && fechaFin != "" && tipoC !=""){
-         new Date(fechaIn.replace('-', '/')).getFullYear() != new Date(fechaFin.replace('-', '/')).getFullYear() ?  "" :  consulta = `SELECT uuid, fechaTimbrado, tipoComprobante, folio, total FROM cfdi${new Date(fechaIn.replace('-', '/')).getFullYear()} WHERE tipoComprobante = "${tipoC}" AND fechaTimbrado BETWEEN '${fechaIn}' AND '${fechaFin}'`;
+         new Date(fechaIn.replace('-', '/')).getFullYear() != new Date(fechaFin.replace('-', '/')).getFullYear() ?  "" :  consulta = `SELECT uuid, fechaTimbrado, tipoComprobante, rfcEmisor, folio, total FROM cfdi${new Date(fechaIn.replace('-', '/')).getFullYear()} WHERE tipoComprobante = "${tipoC}" AND fechaTimbrado BETWEEN '${fechaIn}' AND '${fechaFin}'`;
     }else{
         consulta = "";
     }
