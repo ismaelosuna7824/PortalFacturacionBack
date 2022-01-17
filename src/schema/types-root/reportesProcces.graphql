@@ -16,6 +16,8 @@ type ResultReporte {
     Metadata: String
     rfcEmisor: String
     nombreEmisor: String
+    status: Int
+    fechaCancelacion: Date
 }
 
 scalar Date
