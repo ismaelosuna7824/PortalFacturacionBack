@@ -18,6 +18,7 @@ type ResultReporte {
     nombreEmisor: String
     status: Int
     fechaCancelacion: Date
+    emitidos: Int
 }
 
 scalar Date
