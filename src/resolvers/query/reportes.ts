@@ -14,8 +14,10 @@ const reportesQuery: IResolvers = {
               }else{
                 connection.query(sql, function (error: any, results: any) {
                     if (error) {
+                      console.log(error)
                       resolve([])
-                    }                    // Resultado correcto
+                    }         
+                    //console.log(results)           // Resultado correcto
                     results.forEach((element: any) => {
                       users.push({
                         uuid: element.uuid,
@@ -25,14 +27,14 @@ const reportesQuery: IResolvers = {
                         // serie: element.serie,
                         total: element.total,
                         descuento: element.descuento,
-                        // totalImpuestoTrasladado: element.totalImpuestoTrasladado,
+                        totalImpuestoTrasladado: element.totalImpuestoTrasladado,
                         // totalImpuestoRetenido: element.totalImpuestoRetenido,
                         Metadata: element.Metadata,
                         rfcEmisor: element.rfcEmisor,
                         status: element.status,
                         fechaCancelacion: element.fechaCancelacion,
-                        emitidos: element.emitidos
-                        // nombreEmisor: element.nombreEmisor
+                        emitidos: element.emitidos,
+                        nombreEmisor: element.nombreEmisor
                       });
                       // console.log(element.Metadata)
                         //console.log(element)
@@ -52,11 +54,11 @@ export default reportesQuery;
 export const regresaSql = (fechaIn:string, fechaFin: string, tipoC:string) =>{
     let consulta = "";
     if(fechaIn != "" && fechaFin != "" && tipoC ==""){
-      new Date(fechaIn.replace('-', '/')).getFullYear() != new Date(fechaFin.replace('-', '/')).getFullYear() ?  "" : consulta = `SELECT uuid, fechaTimbrado, tipoComprobante, rfcEmisor, folio, Metadata, total, status, fechaCancelacion, emitidos, descuento FROM cfdi${new Date(fechaFin.replace('-', '/')).getFullYear()} WHERE fechaTimbrado BETWEEN '${fechaIn}' AND '${fechaFin}'`;
+      new Date(fechaIn.replace('-', '/')).getFullYear() != new Date(fechaFin.replace('-', '/')).getFullYear() ?  "" : consulta = `SELECT uuid, fechaTimbrado, tipoComprobante, rfcEmisor, folio, Metadata, total, status, fechaCancelacion, emitidos, descuento, nombreEmisor, totalImpuestoTrasladado FROM cfdi${new Date(fechaFin.replace('-', '/')).getFullYear()} WHERE fechaTimbrado BETWEEN '${fechaIn}' AND '${fechaFin}'`;
     }else if(fechaIn != " " && fechaFin == "" && tipoC !="" ){
-      consulta = `SELECT uuid, fechaTimbrado, tipoComprobante, rfcEmisor, folio, Metadata, total, status, fechaCancelacion, emitidos, descuento FROM cfdi${new Date(fechaIn.replace('-', '/')).getFullYear()} WHERE tipoComprobante = "${tipoC}"`;
+      consulta = `SELECT uuid, fechaTimbrado, tipoComprobante, rfcEmisor, folio, Metadata, total, status, fechaCancelacion, emitidos, descuento, nombreEmisor, totalImpuestoTrasladado FROM cfdi${new Date(fechaIn.replace('-', '/')).getFullYear()} WHERE tipoComprobante = "${tipoC}"`;
     }else if(fechaIn!= "" && fechaFin != "" && tipoC !=""){
-         new Date(fechaIn.replace('-', '/')).getFullYear() != new Date(fechaFin.replace('-', '/')).getFullYear() ?  "" :  consulta = `SELECT uuid, fechaTimbrado, tipoComprobante, rfcEmisor, folio, Metadata, total, status, fechaCancelacion, emitidos, descuento FROM cfdi${new Date(fechaIn.replace('-', '/')).getFullYear()} WHERE tipoComprobante = "${tipoC}" AND fechaTimbrado BETWEEN '${fechaIn}' AND '${fechaFin}'`;
+         new Date(fechaIn.replace('-', '/')).getFullYear() != new Date(fechaFin.replace('-', '/')).getFullYear() ?  "" :  consulta = `SELECT uuid, fechaTimbrado, tipoComprobante, rfcEmisor, folio, Metadata, total, status, fechaCancelacion, emitidos, descuento, nombreEmisor, totalImpuestoTrasladado FROM cfdi${new Date(fechaIn.replace('-', '/')).getFullYear()} WHERE tipoComprobante = "${tipoC}" AND fechaTimbrado BETWEEN '${fechaIn}' AND '${fechaFin}'`;
     }else{
         consulta = "";
     }
