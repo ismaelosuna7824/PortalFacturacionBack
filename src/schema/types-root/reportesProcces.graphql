@@ -1,5 +1,6 @@
 type Query {
     reporteFacturas(fechaIn: String, fechaFi: String, tipoComprobante: String): [ResultReporte]
+    reporteMes(year: Int, status: Int, emitidos: Int, tipoComprobante: String): [resultMes]
 }
 
 
@@ -19,6 +20,17 @@ type ResultReporte {
     status: Int
     fechaCancelacion: Date
     emitidos: Int
+}
+
+
+type resultMes{
+    mes: String
+    subtotal: Float
+    descuento: Float
+    ivatraslado: Float
+    retencioniva: Float
+    retencionisr: Float
+    total: Float
 }
 
 scalar Date
