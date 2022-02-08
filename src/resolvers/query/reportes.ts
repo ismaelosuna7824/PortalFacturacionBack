@@ -1,5 +1,4 @@
 import { IResolvers } from 'graphql-tools';
-import moment from 'moment';
 import util from 'util';
 
 
