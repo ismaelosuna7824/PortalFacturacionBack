@@ -1,4 +1,7 @@
 import { IResolvers } from 'graphql-tools';
+import moment from 'moment';
+import util from 'util';
+
 
 const reportesQuery: IResolvers = {
     Query : {
@@ -47,54 +50,98 @@ const reportesQuery: IResolvers = {
           
           },
 
-          reporteMes(_, {year, status, emitidos, tipoComprobante}, { connection }) {  
+        async  reporteMes(_, {year, status, emitidos, tipoComprobante}, { connection }) {  
             let comprobante = tipoComprobante == "I" ? "ingreso,I" : "egreso,E";
             //console.log(year)
             const users:any = new Array(0);
-            return new Promise((resolve, reject) => {
+            return new Promise(async (resolve, reject) => {
              
-                connection.query(`
-                    SELECT MONTHNAME(fechaTimbrado) AS mes,
-                        IFNULL(SUM(SUBSTRING_INDEX(SUBSTRING_INDEX(metadata,'|',3), '|', -1)),0) AS Subtotal,
-                          IFNULL(SUM(Descuento),0) AS Descuento,
-                          IFNULL(SUM(totalImpuestoTrasladado),0) AS IVA_TRASLADADO,
-                          IFNULL(SUM(SUBSTRING_INDEX(SUBSTRING_INDEX(metadata,'|',9), '|', -1)),0) AS RIVA,
-                          IFNULL(SUM(SUBSTRING_INDEX(SUBSTRING_INDEX(metadata,'|',10), '|', -1)),0) AS RISR,
-                          IFNULL(SUM(total),0) AS Total
-                    FROM cfdi${year} 
-                    WHERE 
-                        STATUS = ${status} AND 
-                        emitidos = ${emitidos} AND 
-                        tipoComprobante IN ('${comprobante.split(',')[0]}','${comprobante.split(',')[1]}')
-                    GROUP BY MONTHNAME(fechaTimbrado);
-                `, function (error: any, results: any) {
-                  
-                    if (error) {
-                      console.log(error)
-                      resolve([])
-                    }         
-                    //console.log(results)           // Resultado correcto
-                    results.forEach((element: any) => {
-                      users.push({
-                        mes: element.mes.toUpperCase(),
-                        subtotal: element.Subtotal,
-                        descuento: element.Descuento,
-                        ivatraslado: element.IVA_TRASLADADO,
-                        retencioniva: element.RIVA,
-                        retencionisr: element.RISR,
-                        total: element.Total
-                      });
-                      // console.log(element.Metadata)
-                        //console.log(element)
+                
+             for (let index = 1; index < 13; index++) {
+               
+              //let firstDay = new Date(year, index, 1);
+              let query = util.promisify(connection.query).bind(connection);
+              let  endDay = new Date(year, index, 0);
+             
+               const resp = await  query(`
+                SELECT MONTHNAME(fechaTimbrado) AS mes, IFNULL(SUM(SUBSTRING_INDEX(SUBSTRING_INDEX(metadata,'|',3), '|', -1)),0) AS Subtotal,
+                IFNULL(SUM(Descuento),0) AS Descuento,
+                IFNULL(SUM(totalImpuestoTrasladado),0) AS IVA_TRASLADADO,
+                IFNULL(SUM(SUBSTRING_INDEX(SUBSTRING_INDEX(metadata,'|',9), '|', -1)),0) AS RIVA,
+                IFNULL(SUM(SUBSTRING_INDEX(SUBSTRING_INDEX(metadata,'|',10), '|', -1)),0) AS RISR,
+                IFNULL(SUM(total),0) AS Total
+                FROM cfdi${year}
+                WHERE fechaTimbrado BETWEEN '${year}-${index.toString().length == 1 ? index.toString().padStart(2, '0') : index}-01T00:00:00' AND '${year}-${index.toString().length == 1 ? index.toString().padStart(2, '0') : index}-${endDay.getDate()}T23:59:59' AND STATUS = ${status} AND emitidos = ${emitidos} AND tipoComprobante IN ('${comprobante.split(',')[0]}','${comprobante.split(',')[1]}')
+                GROUP BY MONTHNAME(fechaTimbrado);`);
+
+                  resp.forEach((element: any) => {
+                    users.push({
+                      mes: element.mes.toUpperCase(),
+                      subtotal: element.Subtotal,
+                      descuento: element.Descuento,
+                      ivatraslado: element.IVA_TRASLADADO,
+                      retencioniva: element.RIVA,
+                      retencionisr: element.RISR,
+                      total: element.Total
                     });
-                    let months = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE",
-                    "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
-                    
-                   const temp = users.sort((a:any, b:any) => (a.mes - b.mes) || (months.indexOf(a.mes) - months.indexOf(b.mes)));
-                   resolve(temp);
-                    //  console.log()
+                    // console.log(element.Metadata)
+                      //console.log(element)
                   });
-             
+
+
+              // connection.query(`
+              // SELECT MONTHNAME(fechaTimbrado) AS mes, IFNULL(SUM(SUBSTRING_INDEX(SUBSTRING_INDEX(metadata,'|',3), '|', -1)),0) AS Subtotal,
+              // IFNULL(SUM(Descuento),0) AS Descuento,
+              // IFNULL(SUM(totalImpuestoTrasladado),0) AS IVA_TRASLADADO,
+              // IFNULL(SUM(SUBSTRING_INDEX(SUBSTRING_INDEX(metadata,'|',9), '|', -1)),0) AS RIVA,
+              // IFNULL(SUM(SUBSTRING_INDEX(SUBSTRING_INDEX(metadata,'|',10), '|', -1)),0) AS RISR,
+              // IFNULL(SUM(total),0) AS Total
+              // FROM cfdi${year}
+              // WHERE fechaTimbrado BETWEEN '${year}-${index.toString().length == 1 ? index.toString().padStart(2, '0') : index}-01T00:00:00' AND '${year}-${index.toString().length == 1 ? index.toString().padStart(2, '0') : index}-${endDay.getDate()}T23:59:59' AND STATUS = ${status} AND emitidos = ${emitidos} AND tipoComprobante IN ('${comprobante.split(',')[0]}','${comprobante.split(',')[1]}')
+              // GROUP BY MONTHNAME(fechaTimbrado);
+              //   `, function (error: any, results: any) {
+                  
+              //       if (error) {
+              //         console.log(error)
+              //         resolve([])
+              //       }         
+              //       //console.log(results)           // Resultado correcto
+              //       results.forEach((element: any) => {
+              //         users.push({
+              //           mes: element.mes.toUpperCase(),
+              //           subtotal: element.Subtotal,
+              //           descuento: element.Descuento,
+              //           ivatraslado: element.IVA_TRASLADADO,
+              //           retencioniva: element.RIVA,
+              //           retencionisr: element.RISR,
+              //           total: element.Total
+              //         });
+              //         // console.log(element.Metadata)
+              //           //console.log(element)
+              //       });
+              //     //   let months = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE",
+              //     //   "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+                    
+              //     //  const temp = users.sort((a:any, b:any) => (a.mes - b.mes) || (months.indexOf(a.mes) - months.indexOf(b.mes)));
+              //     //  resolve(temp);
+              //       //  console.log()
+              //     });
+           
+
+           
+
+            //    console.log(resp);
+          
+
+
+             }
+            //  setTimeout(() => {
+            //    console.log(users);
+            //  }, 10000);
+
+            // console.log(users);
+            
+             resolve(users);
             });
 
 
