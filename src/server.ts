@@ -7,7 +7,17 @@ import { ApolloServer, PubSub } from 'apollo-server-express';
 import { createServer } from 'http';
 import expressPlayGround from 'graphql-playground-middleware-express';
 import connection from './config/database';
+import fs from 'fs';
+import path from 'path'
+import bodyParser from 'body-parser';
+var dir = './files';
+
+
+
 async function init() {
+  // if (!fs.existsSync(dir)){
+  //   fs.mkdirSync(dir);
+  // }
   // Inicializamos la aplicación express
   const app = express();
 
@@ -15,6 +25,7 @@ async function init() {
   app.use('*', cors());
   const pubsub = new PubSub();
   app.use(compression());
+  
 
   // Inicializamos el servidor de Apollo
   const server = new ApolloServer({
@@ -48,6 +59,22 @@ async function init() {
       console.log(`ws://localhost:${PORT}${server.subscriptionsPath}`);
     }
   );
+ // appFiles();
 }
 
 init();
+
+
+export function appFiles(){
+
+  const appFiles = express();
+  appFiles.use('*', cors());
+  appFiles.use(bodyParser.json());
+  appFiles.use(bodyParser.urlencoded({extended: true}));
+  appFiles.use(express.static('files'));
+  const port =  8123;
+
+  appFiles.listen(port, () => 
+  console.log(`App is listening on port ${port}.`)
+  ) ;
+}

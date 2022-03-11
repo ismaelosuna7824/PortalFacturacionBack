@@ -6,7 +6,8 @@ import queryUser from "./user";
 const queryResolvers = GMR.merge(
     [ 
         reportesQuery,
-        queryUser
+        queryUser,
+        queryTest
     ]
 );
 

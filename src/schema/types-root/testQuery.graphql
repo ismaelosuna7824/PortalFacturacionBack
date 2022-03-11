@@ -1,3 +1,17 @@
 type Query {
-    testQuery: [Test]
+    testQuery(fechaIn: String, fechaFi: String, tipoComprobante: String, emitidos: Int, pagination: [String], totales: [totalesT]): rustultFile
+}
+
+type rustultFile{
+
+    url: String
+
+}
+
+input totalesT {
+    totalEmitido: String
+    totalRecibidos: String
+    totalIngreso: String
+    totalEgreso: String
+    totalGeneral: String
 }
