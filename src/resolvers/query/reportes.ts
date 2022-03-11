@@ -199,7 +199,7 @@ export const regresaSql2 = (fechaIn:string, fechaFin: string, tipoC:string, emit
 export const regresaSql3 = (fechaIn:string , fechaFin:string, tipoComprobante:string, emitidos:number, egreso:string, ingreso: string)=>{
   let consulta = ""
 
-    new Date(fechaIn.replace('-', '/')).getFullYear() != new Date(fechaFin.replace('-', '/')).getFullYear() ?  "" : consulta = ` SELECT 
+    new Date(fechaIn.replace('-', '/')).getFullYear() != new Date(fechaFin.replace('-', '/')).getFullYear() ? consulta = "" : consulta = ` SELECT 
    COUNT(UUID) AS totalRegistros, 
    SUM(IF(tipoComprobante = '${egreso}',total,0))AS totalEgresos,
    SUM(IF(tipoComprobante = '${ingreso}',total,0))AS totalIngresos,
