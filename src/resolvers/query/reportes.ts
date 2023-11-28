@@ -102,7 +102,7 @@ const reportesQuery: IResolvers = {
                 IFNULL(SUM(SUBSTRING_INDEX(SUBSTRING_INDEX(metadata,'|',10), '|', -1)),0) AS RISR,
                 IFNULL(SUM(total),0) AS Total
                 FROM cfdi${year}
-                WHERE fechaTimbrado BETWEEN '${year}-${index.toString().length == 1 ? index.toString().padStart(2, '0') : index}-01T00:00:00' AND '${year}-${index.toString().length == 1 ? index.toString().padStart(2, '0') : index}-${endDay.getDate()}T23:59:59' AND STATUS = ${status} AND emitidos = ${emitidos} AND tipoComprobante IN ('${comprobante.split(',')[0]}','${comprobante.split(',')[1]}')
+                WHERE fechaTimbrado BETWEEN '${year}-${index.toString().length == 1 ? index.toString().padStart(2, '0') : index}-01T00:00:00' AND '${year}-${index.toString().length == 1 ? index.toString().padStart(2, '0') : index}-${endDay.getDate()}T23:59:59' AND (STATUS = ${status} OR STATUS IS NULL) AND emitidos = ${emitidos} AND tipoComprobante IN ('${comprobante.split(',')[0]}','${comprobante.split(',')[1]}')
                 GROUP BY MONTHNAME(fechaTimbrado);`);
 
                   resp.forEach((element: any) => {
@@ -118,10 +118,6 @@ const reportesQuery: IResolvers = {
                     // console.log(element.Metadata)
                       //console.log(element)
                   });
-
-
-            
-
 
              }
           
